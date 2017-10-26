@@ -243,18 +243,16 @@ type NthPrime() =
 
 type Pangram() =
     inherit Exercise()
-    
-type PerfectNumbers() =
+
+type PalindromeProducts() =
     inherit Exercise()
+    member private this.renderPropertyValue canonicalDataCase property =
+        this.RenderSutParameter (canonicalDataCase, property, Map.find property canonicalDataCase.Properties)
 
-    let toClassification value = string value |> String.humanize
-
-    override this.RenderExpected (canonicalDataCase, key, value) = 
-        value 
-        |> Option.ofNonError  
-        |> Option.map toClassification 
-        |> formatOption 
-        |> parenthesizeOption
+    override this.RenderArrange canonicalDataCase =
+            let inputMin = this.renderPropertyValue canonicalDataCase "input_min"
+            let inputMax = this.renderPropertyValue canonicalDataCase "input_max"
+            [sprintf "let (largest, factors) = %s Palindrome %s %s" canonicalDataCase.Property inputMin inputMax]
 
 type PascalsTriangle() =
     inherit Exercise()
@@ -275,12 +273,24 @@ type PascalsTriangle() =
 
     override this.ToTestMethodBodyAssertTemplate canonicalDataCase = "AssertEqual"
 
+type PerfectNumbers() =
+    inherit Exercise()
+
+    let toClassification value = string value |> String.humanize
+
+    override this.RenderExpected (canonicalDataCase, key, value) = 
+        value 
+        |> Option.ofNonError  
+        |> Option.map toClassification 
+        |> formatOption 
+        |> parenthesizeOption
+
 type PhoneNumber() =
     inherit Exercise()
     
     override this.RenderExpected (canonicalDataCase, key, value) =
-        value 
-        |> Option.ofObj 
+        value
+        |> Option.ofObj
         |> formatValue
         |> parenthesizeOption
 
